@@ -85,6 +85,8 @@
     if (!_manager) {
         _manager = [[HXPhotoManager alloc] initWithType:HXPhotoManagerSelectedTypePhoto];
         _manager.configuration.videoMaxNum = 5;
+        _manager.configuration.videoMinimumSelectDuration = 3;
+        _manager.configuration.videoMaximumDuration = 30.0;
         _manager.configuration.deleteTemporaryPhoto = NO;
         _manager.configuration.lookLivePhoto = YES;
         _manager.configuration.saveSystemAblum = YES;
