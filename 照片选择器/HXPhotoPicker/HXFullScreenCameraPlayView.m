@@ -57,13 +57,13 @@
     whiteCircleLayer.strokeColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:1].CGColor;
     whiteCircleLayer.fillColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0].CGColor;
     whiteCircleLayer.lineWidth = 6;
-    whiteCircleLayer.path = [self circlePath:self.frame.size.width * 0.5 - 3].CGPath;
+    whiteCircleLayer.path = [self circlePath:self.frame.size.width * 0.5].CGPath;
     [self.layer addSublayer:whiteCircleLayer];
     self.whiteCircleLayer = whiteCircleLayer;
     
     // 内部白色圆
     self.centerCircleLayer = [CALayer layer];
-    self.centerCircleLayer.frame = CGRectMake(6, 6, self.frame.size.width-12.0, self.frame.size.width-12.0);
+    self.centerCircleLayer.frame = CGRectMake(3, 3, self.frame.size.width-6.0, self.frame.size.width-6.0);
     self.centerCircleLayer.masksToBounds = YES;
     self.centerCircleLayer.cornerRadius = _centerCircleLayer.bounds.size.width/2.0;
     self.centerCircleLayer.backgroundColor = [UIColor whiteColor].CGColor;
@@ -77,7 +77,7 @@
     circleLayer.startPoint = CGPointMake(0.5, 0);
     circleLayer.endPoint = CGPointMake(0.5, 1);
     circleLayer.masksToBounds = YES;
-    circleLayer.bounds = CGRectMake(0, 0, self.frame.size.width-12.0, self.frame.size.width-12.0);
+    circleLayer.bounds = CGRectMake(0, 0, self.frame.size.width-6.0, self.frame.size.width-6.0);
     circleLayer.cornerRadius = circleLayer.bounds.size.width/2.0;
     circleLayer.position = CGPointMake(self.frame.size.width/2.0, self.frame.size.width/2.0);
     [self.layer addSublayer:circleLayer];
@@ -89,7 +89,7 @@
     self.minProgressLayer.fillColor = [UIColor clearColor].CGColor;
     self.minProgressLayer.lineWidth = 6;
     UIBezierPath *minProgressPath = [UIBezierPath bezierPathWithArcCenter:CGPointMake(self.frame.size.width * 0.5, self.frame.size.height * 0.5)
-                                                                   radius:(self.frame.size.width * 0.5 - 3) startAngle:-M_PI/2.0
+                                                                   radius:self.frame.size.width * 0.5 startAngle:-M_PI/2.0
                                                                  endAngle:self.minProgress*2*M_PI-M_PI/2.0
                                                                 clockwise:true];
     minProgressPath.lineWidth = 1;
@@ -104,7 +104,7 @@
     progressLayer.fillColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0].CGColor;
     progressLayer.lineWidth = 6;
     progressLayer.path = [UIBezierPath bezierPathWithArcCenter:self.progressCenter
-                                                        radius:(self.frame.size.width * 0.5 - 3)
+                                                        radius:(self.frame.size.width * 0.5)
                                                     startAngle:-M_PI / 2
                                                       endAngle:-M_PI / 2 + M_PI * 2 * 1
                                                      clockwise:true].CGPath;
