@@ -1199,16 +1199,6 @@
                     return [NSBundle hx_localizedStringForKey:@"视频不能和图片同时选择"];
                 }
             }
-            if ([self beforeSelectVideoCountIsMaximum]) {
-                // 已经达到视频最大选择数
-                NSUInteger maxSelectCount;
-                if (self.configuration.videoMaxNum > 0) {
-                    maxSelectCount = self.configuration.videoMaxNum;
-                }else {
-                    maxSelectCount = self.configuration.maxNum - self.selectedPhotos.count;
-                }
-                return [NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"最多只能选择%ld个视频"],maxSelectCount];
-            }
         }
     }else if (self.type == HXPhotoManagerSelectedTypePhoto) {
         if (model.subType == HXPhotoModelMediaSubTypeVideo) {
@@ -1230,26 +1220,17 @@
             // 已经选择了图片,不能再选视频
             return [NSBundle hx_localizedStringForKey:@"图片不能和视频同时选择"];
         }
-        if ([self beforeSelectVideoCountIsMaximum]) {
-            NSUInteger maxSelectCount;
-            if (self.configuration.videoMaxNum > 0) {
-                maxSelectCount = self.configuration.videoMaxNum;
-            }else {
-                maxSelectCount = self.configuration.maxNum;
-            }
-            // 已经达到视频最大选择数
-            return [NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"最多只能选择%ld个视频"],maxSelectCount];
-        }
     }
     if (model.subType == HXPhotoModelMediaSubTypeVideo) {
-        if (model.videoDuration < self.configuration.videoMinimumSelectDuration) { 
-            return [NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"视频少于%ld秒，无法选择"], self.configuration.videoMinimumSelectDuration];
+        if (model.videoDuration < self.configuration.videoMinimumSelectDuration) {
+            return [NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"请选择%lds及以上的视频"], self.configuration.videoMinimumSelectDuration];
         }else if (model.videoDuration >= self.configuration.videoMaximumSelectDuration + 1) {
-            return [NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"视频大于%ld秒，无法选择"], self.configuration.videoMaximumSelectDuration];
+            return [NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"请选择%lds以内的视频"], self.configuration.videoMaximumSelectDuration];
         }
     } 
     return nil;
 }
+
 #pragma mark - < 改变模型的视频状态 >
 - (void)changeModelVideoState:(HXPhotoModel *)model {
     if (self.configuration.specialModeNeedHideVideoSelectBtn) {

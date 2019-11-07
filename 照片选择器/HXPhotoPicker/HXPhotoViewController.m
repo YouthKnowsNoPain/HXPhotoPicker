@@ -172,7 +172,13 @@ HXVideoEditViewControllerDelegate
 #pragma mark - < private >
 - (void)setupUI {
     self.currentSectionIndex = 0;
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:[NSBundle hx_localizedStringForKey:@"取消"] style:UIBarButtonItemStyleDone target:self action:@selector(didCancelClick)];
+    UIColor *fontColor = [UIColor colorWithRed:145/255.0 green:151/255.0 blue:163/255.0 alpha:1];
+    UIButton *rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [rightButton setTitle:@"取消" forState:UIControlStateNormal];
+    [rightButton setTitleColor:fontColor forState:UIControlStateNormal];
+    rightButton.titleLabel.font = [UIFont systemFontOfSize:15 weight:UIFontWeightMedium];
+    [rightButton addTarget:self action:@selector(didCancelClick) forControlEvents:UIControlEventTouchUpInside];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
     [self.view addSubview:self.collectionView];
     if (!self.manager.configuration.singleSelected) {
         [self.view addSubview:self.bottomView];
@@ -842,9 +848,9 @@ HXVideoEditViewControllerDelegate
                         }
                         weakSelf.manager.configuration.useCameraComplete = ^(HXPhotoModel *model) {
                             if (model.videoDuration < weakSelf.manager.configuration.videoMinimumSelectDuration) {
-                                [weakSelf.view hx_showImageHUDText:[NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"视频少于%ld秒，无法选择"], weakSelf.manager.configuration.videoMinimumSelectDuration]];
+                                [weakSelf.view hx_showImageHUDText:[NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"视频需录制%lds以上"], weakSelf.manager.configuration.videoMinimumSelectDuration]];
                             }else if (model.videoDuration >= weakSelf.manager.configuration.videoMaximumSelectDuration + 1) {
-                                [weakSelf.view hx_showImageHUDText:[NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"视频大于%ld秒，无法选择"], weakSelf.manager.configuration.videoMaximumSelectDuration]];
+                                [weakSelf.view hx_showImageHUDText:[NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"视频需录制%lds以下"], weakSelf.manager.configuration.videoMaximumSelectDuration]];
                             }
                             [weakSelf customCameraViewController:nil didDone:model];
                         };
@@ -900,6 +906,11 @@ HXVideoEditViewControllerDelegate
             self.navigationController.delegate = previewVC;
             [self.navigationController pushViewController:previewVC animated:YES];
         }else {
+            NSString *str = [self.manager maximumOfJudgment:model];
+            if (str) {
+                [self.view hx_showImageHUDText:str];
+                return;
+            }
             if (!self.manager.configuration.singleJumpEdit) {
                 NSInteger currentIndex = [self.previewArray indexOfObject:cell.model];
                 HXPhotoPreviewViewController *previewVC = [[HXPhotoPreviewViewController alloc] init];
@@ -1117,6 +1128,7 @@ HXVideoEditViewControllerDelegate
         cell.model.selectIndexStr = @"";
         cell.selectMaskLayer.hidden = YES;
         selectBtn.selected = NO;
+        [selectBtn setBackgroundImage:[UIImage hx_imageNamed:@"hx_compose_guide_check_box_default"] forState:UIControlStateNormal];
     }else {
         NSString *str = [self.manager maximumOfJudgment:cell.model];
         if (str) {
@@ -1129,11 +1141,7 @@ HXVideoEditViewControllerDelegate
         [self.manager beforeSelectedListAddPhotoModel:cell.model];
         cell.selectMaskLayer.hidden = NO;
         selectBtn.selected = YES;
-        [selectBtn setTitle:cell.model.selectIndexStr forState:UIControlStateSelected];
-        CAKeyframeAnimation *anim = [CAKeyframeAnimation animationWithKeyPath:@"transform.scale"];
-        anim.duration = 0.25;
-        anim.values = @[@(1.2),@(0.8),@(1.1),@(0.9),@(1.0)];
-        [selectBtn.layer addAnimation:anim forKey:@""];
+        [selectBtn setBackgroundImage:[UIImage hx_imageNamed:@"hx_compose_guide_check_box_select"] forState:UIControlStateNormal];
     }
     UIColor *cellSelectedBgColor;
     if ([HXPhotoCommon photoCommon].isDark) {
@@ -1147,7 +1155,6 @@ HXVideoEditViewControllerDelegate
     }else {
         bgColor = self.manager.configuration.themeColor;
     }
-    selectBtn.backgroundColor = selectBtn.selected ? bgColor : nil;
     
     NSMutableArray *indexPathList = [NSMutableArray array];
     if (!selectBtn.selected) {
@@ -1869,18 +1876,6 @@ HXVideoEditViewControllerDelegate
                 self.selectMaskLayer.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.2].CGColor;
             }
             self.imageView.backgroundColor = [HXPhotoCommon photoCommon].isDark ? [UIColor colorWithRed:0.1 green:0.1 blue:0.1 alpha:1] : [UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
-
-            UIColor *cellSelectedTitleColor;
-            UIColor *cellSelectedBgColor;
-            if ([HXPhotoCommon photoCommon].isDark) {
-                cellSelectedTitleColor = self.darkSelectedTitleColor;
-                cellSelectedBgColor = self.darkSelectBgColor;
-            }else {
-                cellSelectedTitleColor = self.selectedTitleColor;
-                cellSelectedBgColor = self.selectBgColor;
-            }
-            [self.selectBtn setTitleColor:cellSelectedTitleColor forState:UIControlStateSelected];
-            self.selectBtn.backgroundColor = self.model.selected ? cellSelectedBgColor : nil;
         }
     }
 #endif
@@ -2006,18 +2001,20 @@ HXVideoEditViewControllerDelegate
     }
     self.selectMaskLayer.hidden = !model.selected;
     self.selectBtn.selected = model.selected;
-    [self.selectBtn setTitle:model.selectIndexStr forState:UIControlStateSelected];
-    self.selectBtn.backgroundColor = model.selected ? ([HXPhotoCommon photoCommon].isDark ? self.darkSelectBgColor : self.selectBgColor) :nil;
+    self.selectBtn.hidden = NO;
+    if (model.selected) {
+        [self.selectBtn setBackgroundImage:[UIImage hx_imageNamed:@"hx_compose_guide_check_box_select"] forState:UIControlStateNormal];
+    } else {
+        [self.selectBtn setBackgroundImage:[UIImage hx_imageNamed:@"hx_compose_guide_check_box_default"] forState:UIControlStateNormal];
+    }
     
     self.iCloudIcon.hidden = !model.isICloud;
     self.iCloudMaskLayer.hidden = !model.isICloud;
     
     // 当前是否需要隐藏选择按钮
     if (model.needHideSelectBtn) {
-        self.selectBtn.hidden = YES;
         self.selectBtn.userInteractionEnabled = NO;
     }else {
-        self.selectBtn.hidden = model.isICloud;
         self.selectBtn.userInteractionEnabled = !model.isICloud;
     }
     
@@ -2189,8 +2186,8 @@ HXVideoEditViewControllerDelegate
     self.imageView.frame = self.bounds;
     self.maskView.frame = self.bounds;
     self.stateLb.frame = CGRectMake(0, self.hx_h - 18, self.hx_w - 4, 18);
-    self.bottomMaskLayer.frame = CGRectMake(0, self.hx_h - 25, self.hx_w, 25);
-    self.selectBtn.frame = CGRectMake(self.hx_w - 27, 2, 25, 25);
+    self.bottomMaskLayer.frame = CGRectMake(0, self.hx_h - 20, self.hx_w, 20);
+    self.selectBtn.frame = CGRectMake(self.hx_w - 21, 1, 20, 20);
     self.selectMaskLayer.frame = self.bounds;
     self.iCloudMaskLayer.frame = self.bounds;
     self.iCloudIcon.hx_x = self.hx_w - 3 - self.iCloudIcon.hx_w;
@@ -2313,13 +2310,12 @@ HXVideoEditViewControllerDelegate
     if (!_selectBtn) {
         _selectBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_selectBtn setBackgroundImage:[UIImage hx_imageNamed:@"hx_compose_guide_check_box_default"] forState:UIControlStateNormal];
-        [_selectBtn setBackgroundImage:[[UIImage alloc] init] forState:UIControlStateSelected];
         [_selectBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
         _selectBtn.titleLabel.font = [UIFont systemFontOfSize:14];
         _selectBtn.titleLabel.adjustsFontSizeToFitWidth = YES;
         [_selectBtn addTarget:self action:@selector(didSelectClick:) forControlEvents:UIControlEventTouchUpInside];
         [_selectBtn setEnlargeEdgeWithTop:0 right:0 bottom:15 left:15];
-        _selectBtn.layer.cornerRadius = 25 / 2;
+        _selectBtn.layer.cornerRadius = 20 / 2;
     }
     return _selectBtn;
 }

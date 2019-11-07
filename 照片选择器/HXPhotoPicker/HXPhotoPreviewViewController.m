@@ -396,7 +396,6 @@ HXVideoEditViewControllerDelegate
                 self.subTitleLb.textColor = [UIColor blackColor];
             }
         }
-        self.selectBtn.backgroundColor = self.selectBtn.selected ? selectBtnBgColor : nil;
     }else {
         if (self.exteriorPreviewStyle == HXPhotoViewPreViewShowStyleDefault) {
             [self.navBar setTintColor:themeColor];
@@ -1198,12 +1197,11 @@ HXVideoEditViewControllerDelegate
 - (UIButton *)selectBtn {
     if (!_selectBtn) {
         _selectBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_selectBtn setBackgroundImage:[UIImage hx_imageNamed:@"hx_compose_guide_check_box_default_2"] forState:UIControlStateNormal];
-        [_selectBtn setBackgroundImage:[[UIImage alloc] init] forState:UIControlStateSelected];
+        [_selectBtn setBackgroundImage:[UIImage hx_imageNamed:@"hx_compose_guide_check_box_default"] forState:UIControlStateNormal];
         _selectBtn.titleLabel.font = [UIFont systemFontOfSize:14];
         _selectBtn.adjustsImageWhenDisabled = YES;
         [_selectBtn addTarget:self action:@selector(didSelectClick:) forControlEvents:UIControlEventTouchUpInside];
-        _selectBtn.hx_size = CGSizeMake(24, 24);
+        _selectBtn.hx_size = CGSizeMake(20, 20);
         [_selectBtn setEnlargeEdgeWithTop:0 right:0 bottom:20 left:20];
         _selectBtn.layer.cornerRadius = 12;
     }

@@ -185,7 +185,13 @@ UITableViewDelegate
 - (void)setupUI {
     self.title = [NSBundle hx_localizedStringForKey:@"相册"];
     [self changeColor];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:[NSBundle hx_localizedStringForKey:@"取消"] style:UIBarButtonItemStyleDone target:self action:@selector(cancelClick)];
+    UIColor *fontColor = [UIColor colorWithRed:145/255.0 green:151/255.0 blue:163/255.0 alpha:1];
+    UIButton *rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [rightButton setTitle:@"取消" forState:UIControlStateNormal];
+    [rightButton setTitleColor:fontColor forState:UIControlStateNormal];
+    rightButton.titleLabel.font = [UIFont systemFontOfSize:15 weight:UIFontWeightMedium];
+    [rightButton addTarget:self action:@selector(cancelClick) forControlEvents:UIControlEventTouchUpInside];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
     if (self.manager.configuration.navigationBar) {
         self.manager.configuration.navigationBar(self.navigationController.navigationBar, self);
     }
