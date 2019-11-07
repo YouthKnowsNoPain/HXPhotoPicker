@@ -898,26 +898,36 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     self.maskLayer.frame = CGRectMake(0, -40, self.hx_w, self.hx_h + 40);
-    self.playView.center = CGPointMake(self.hx_w / 2, self.hx_h / 2 + 10);
+    self.playView.center = CGPointMake(self.hx_w / 2, self.hx_h / 2);
     self.timeLb.frame = CGRectMake(12, self.playView.hx_y - 26, self.hx_w - 24, 15);
-    self.titleLb.frame = CGRectMake(12, self.playView.hx_y - 20 - 55, self.hx_w - 24, 40);
+    
+    CGFloat titleLbH = 20.0;
+    CGFloat titleLbYOffset = 30.0;
+    // 如果是视频
+    if (_manager.type == HXPhotoManagerSelectedTypeVideo) {
+        titleLbH = 40;
+        titleLbYOffset = 55.0;
+    }
+    
+    self.titleLb.frame = CGRectMake(12, self.playView.hx_y - 20 - titleLbYOffset, self.hx_w - 24, titleLbH);
+    
     if (self.manager.configuration.customCameraType == HXPhotoCustomCameraTypeUnused) {
         if (self.manager.type == HXPhotoManagerSelectedTypeVideo ||
             self.manager.type == HXPhotoManagerSelectedTypePhoto) {
-            self.titleLb.hx_y = self.playView.hx_y - 55;
+            self.titleLb.hx_y = self.playView.hx_y - titleLbYOffset;
         }else if (self.manager.type == HXPhotoManagerSelectedTypePhotoAndVideo) {
             if (!self.manager.configuration.selectTogether && self.isOutside) {
                 if (self.manager.afterSelectedPhotoArray.count > 0) {
-                    self.titleLb.hx_y = self.playView.hx_y - 55;
+                    self.titleLb.hx_y = self.playView.hx_y - titleLbYOffset;
                 }else if (self.manager.afterSelectedVideoArray.count > 0) {
-                    self.titleLb.hx_y = self.playView.hx_y - 55;
+                    self.titleLb.hx_y = self.playView.hx_y - titleLbYOffset;
                 }
             }
         }
     }else {
         if (self.manager.configuration.customCameraType == HXPhotoCustomCameraTypePhoto ||
             self.manager.configuration.customCameraType == HXPhotoCustomCameraTypeVideo) {
-            self.titleLb.hx_y = self.playView.hx_y - 55;
+            self.titleLb.hx_y = self.playView.hx_y - titleLbYOffset;
         }
     }
     self.photoBtn.hx_y = self.playView.hx_y - 30;
@@ -1007,7 +1017,7 @@
 }
 - (HXFullScreenCameraPlayView *)playView {
     if (!_playView) {
-        _playView = [[HXFullScreenCameraPlayView alloc] initWithFrame:CGRectMake(0, 0, 70, 70) color:self.manager.configuration.themeColor];
+        _playView = [[HXFullScreenCameraPlayView alloc] initWithFrame:CGRectMake(0, 0, 74, 74) color:self.manager.configuration.themeColor];
         self.tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(takePictures)];
         _playView.minProgress = _manager.configuration.videoMinimumSelectDuration/_manager.configuration.videoMaximumDuration;
         [_playView addGestureRecognizer:self.tap];
