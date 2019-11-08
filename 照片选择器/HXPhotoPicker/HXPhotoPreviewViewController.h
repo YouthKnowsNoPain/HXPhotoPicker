@@ -129,6 +129,7 @@ HXPhotoPreviewViewCell;
 @interface HXPhotoPreviewViewCell : UICollectionViewCell
 @property (assign, nonatomic) BOOL stopCancel;
 @property (strong, nonatomic) HXPhotoModel *model;
+@property (strong, nonatomic) HXPhotoManager *manager;
 
 #if HasYYKitOrWebImage
 @property (strong, nonatomic) YYAnimatedImageView *animatedImageView;

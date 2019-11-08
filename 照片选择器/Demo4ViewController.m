@@ -61,6 +61,7 @@
         _manager.configuration.movableCropBox = YES;
         _manager.configuration.photoCanEdit = NO;
         _manager.configuration.reverseDate = YES;
+        _manager.configuration.preCanScrollEnabled = NO;
         _manager.configuration.hidePreViewBtn = YES;
         _manager.configuration.selectedTitleColor = [UIColor whiteColor];
         _manager.configuration.movableCropBoxEditSize = YES;

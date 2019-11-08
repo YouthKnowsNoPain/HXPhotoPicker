@@ -427,6 +427,7 @@ HXVideoEditViewControllerDelegate
 }
 - (void)setupUI {
     [self.view addSubview:self.collectionView];
+    self.collectionView.scrollEnabled = self.manager.configuration.preCanScrollEnabled;
     self.beforeOrientationIndex = self.currentModelIndex;
     if (self.exteriorPreviewStyle == HXPhotoViewPreViewShowStyleDefault) {
         [self.view addSubview:self.bottomView];
@@ -685,6 +686,7 @@ HXVideoEditViewControllerDelegate
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     HXPhotoPreviewViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"DatePreviewCellId" forIndexPath:indexPath];
     HXWeakSelf
+    cell.manager = weakSelf.manager;
     cell.scrollViewDidScroll = ^(CGFloat offsetY) {
         if (weakSelf.currentCellScrollViewDidScroll) {
             weakSelf.currentCellScrollViewDidScroll(offsetY);
@@ -957,7 +959,7 @@ HXVideoEditViewControllerDelegate
                 [self.view hx_showImageHUDText:[NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"请选择%lds以内的视频"], self.manager.configuration.videoMaximumSelectDuration]];
                 return;
             }else if (model.videoDuration < self.manager.configuration.videoMinimumSelectDuration) {
-                [self.view hx_showImageHUDText:[NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"请选择%lds及以上的视频"], self.manager.configuration.videoMinimumSelectDuration]];
+                [self.view hx_showImageHUDText:[NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"请选择%lds以上的视频"], self.manager.configuration.videoMinimumSelectDuration]];
                 return;
             }
         }
@@ -1285,9 +1287,24 @@ HXVideoEditViewControllerDelegate
     [self.scrollView addSubview:self.imageView];
 #endif
     [self.contentView.layer addSublayer:self.playerLayer];
-    [self.contentView addSubview:self.videoPlayBtn];
+//    [self.contentView addSubview:self.videoPlayBtn];
     [self.contentView addSubview:self.progressView];
     [self.contentView addSubview:self.loadingView];
+}
+- (void)setManager:(HXPhotoManager *)manager {
+    _manager = manager;
+    if (!_manager.configuration.singleSelected) {
+        UITapGestureRecognizer *tap1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTap:)];
+        [_scrollView addGestureRecognizer:tap1];
+        UITapGestureRecognizer *tap2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap:)];
+        tap2.numberOfTapsRequired = 2;
+        [tap1 requireGestureRecognizerToFail:tap2];
+        [_scrollView addGestureRecognizer:tap2];
+    } else {
+        for(UITapGestureRecognizer *tag in _scrollView.gestureRecognizers) {
+            [_scrollView removeGestureRecognizer:tag];
+        }
+    }
 }
 - (CGFloat)getScrollViewZoomScale {
     return self.scrollView.zoomScale;
@@ -1327,7 +1344,7 @@ HXVideoEditViewControllerDelegate
     if (self.model.subType == HXPhotoModelMediaSubTypeVideo) {
         self.videoPlayBtn.hidden = NO;
         [self.contentView.layer addSublayer:self.playerLayer];
-        [self.contentView addSubview:self.videoPlayBtn];
+//        [self.contentView addSubview:self.videoPlayBtn];
         self.videoPlayBtn.alpha = 0;
         [UIView animateWithDuration:0.2 animations:^{
             self.videoPlayBtn.alpha = 1;
@@ -1719,8 +1736,8 @@ HXWeakSelf
             weakSelf.videoPlayBtn.hidden = NO;
             weakSelf.player = [AVPlayer playerWithPlayerItem:[AVPlayerItem playerItemWithAsset:avAsset]];
             weakSelf.playerLayer.player = weakSelf.player;
-            [weakSelf.videoPlayBtn setSelected:NO];
-            [weakSelf didPlayBtnClick:weakSelf.videoPlayBtn];
+            weakSelf.videoPlayBtn.hidden = YES;
+            [weakSelf.player play];
             [[NSNotificationCenter defaultCenter] addObserver:weakSelf selector:@selector(pausePlayerAndShowNaviBar) name:AVPlayerItemDidPlayToEndTimeNotification object:weakSelf.player.currentItem];
         } failed:^(NSDictionary *info, HXPhotoModel *model) {
             if (weakSelf.model != model) return;
@@ -1913,12 +1930,6 @@ if (!_scrollView) {
         if ((NO)) {
 #endif
         }
-        UITapGestureRecognizer *tap1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTap:)];
-        [_scrollView addGestureRecognizer:tap1];
-        UITapGestureRecognizer *tap2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap:)];
-        tap2.numberOfTapsRequired = 2;
-        [tap1 requireGestureRecognizerToFail:tap2];
-        [_scrollView addGestureRecognizer:tap2];
     }
     return _scrollView;
 }

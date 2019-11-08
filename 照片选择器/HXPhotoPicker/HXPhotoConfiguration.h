@@ -148,6 +148,9 @@ HXPhotoPreviewViewController;
 /// 视频是否可以编辑   default NO
 @property (assign, nonatomic) BOOL videoCanEdit;
 
+/// 预览界面是否可以左右滑动   default NO
+@property (assign, nonatomic) BOOL preCanScrollEnabled;
+
 /// 是否替换照片编辑界面   default NO
 @property (assign, nonatomic) BOOL replacePhotoEditViewController;
 
