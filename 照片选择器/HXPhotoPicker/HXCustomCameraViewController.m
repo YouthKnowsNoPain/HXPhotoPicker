@@ -327,7 +327,7 @@
             model = [HXPhotoModel photoModelWithImage:self.imageView.image];
         }else {
             if (self.time < _manager.configuration.videoMinimumSelectDuration) {
-                NSString *tip = [NSString stringWithFormat:@"录制时间少于%ld秒", _manager.configuration.videoMinimumSelectDuration];
+                NSString *tip = [NSString stringWithFormat:@"视频需录制%lds以上", (long)_manager.configuration.videoMinimumSelectDuration];
                 [self.view hx_showImageHUDText:[NSBundle hx_localizedStringForKey:tip]];
                 return;
             }
@@ -489,7 +489,7 @@
         self.cancelBtn.selected = NO;
         self.flashBtn.hidden = NO;
         self.changeCameraBtn.hidden = NO;
-        NSString *tip = [NSString stringWithFormat:@"%ld秒内的视频无效哦~", _manager.configuration.videoMinimumSelectDuration];
+        NSString *tip = [NSString stringWithFormat:@"视频需录制%lds以上", (long)_manager.configuration.videoMinimumSelectDuration];
         [self.view hx_showImageHUDText:[NSBundle hx_localizedStringForKey:tip]];
     }else {
         [self.cameraController stopSession];
@@ -826,7 +826,7 @@
 }
 - (void)setupVideoType {
     self.mode = HXCustomCameraBottomViewModeVideo;
-    NSString *tip = [NSString stringWithFormat:@"点击录制\n至少需拍摄%ld秒以上哦", _manager.configuration.videoMinimumSelectDuration];
+    NSString *tip = [NSString stringWithFormat:@"点击录制\n至少需拍摄%ld秒以上哦", (long)_manager.configuration.videoMinimumSelectDuration];
     self.titleLb.text = [NSBundle hx_localizedStringForKey:tip];
     self.titleLb.alpha = 1;
     self.photoBtn.hidden = YES;
@@ -963,7 +963,7 @@
         return;
     }
     self.mode = HXCustomCameraBottomViewModeVideo;
-    NSString *tip = [NSString stringWithFormat:@"点击录制\n至少需拍摄%ld秒以上哦", _manager.configuration.videoMinimumSelectDuration];
+    NSString *tip = [NSString stringWithFormat:@"点击录制\n至少需拍摄%ld秒以上哦", (long)_manager.configuration.videoMinimumSelectDuration];
     self.titleLb.text = [NSBundle hx_localizedStringForKey:tip];
     self.titleLb.alpha = 0;
     self.videoBtn.enabled = NO;
