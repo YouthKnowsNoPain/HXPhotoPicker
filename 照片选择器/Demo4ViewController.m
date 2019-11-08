@@ -52,14 +52,15 @@
 }
 - (HXPhotoManager *)manager {
     if (!_manager) {
-        _manager = [[HXPhotoManager alloc] initWithType:HXPhotoManagerSelectedTypePhoto];
-//        _manager.configuration.singleSelected = YES;
+        _manager = [[HXPhotoManager alloc] initWithType:HXPhotoManagerSelectedTypeVideo];
+        _manager.configuration.singleSelected = YES;
         _manager.configuration.albumListTableView = ^(UITableView *tableView) {
 //            NSSLog(@"%@",tableView);
         };
 //        _manager.configuration.singleJumpEdit = NO;
         _manager.configuration.movableCropBox = YES;
         _manager.configuration.photoCanEdit = NO;
+        _manager.configuration.reverseDate = YES;
         _manager.configuration.hidePreViewBtn = YES;
         _manager.configuration.selectedTitleColor = [UIColor whiteColor];
         _manager.configuration.movableCropBoxEditSize = YES;

@@ -752,7 +752,7 @@ HXVideoEditViewControllerDelegate
         if (self.manager.configuration.cameraCellShowPreview && !cell.startSession) {
             cell.tempCameraView = [HXPhotoCommon photoCommon].tempCameraView;
             cell.tempCameraPreviewView = [HXPhotoCommon photoCommon].tempCameraPreviewView;
-            [cell starRunning];
+//            [cell starRunning];
             cell.stopRunningComplete = ^(UIView *tempCameraPreviewView) {
                 [HXPhotoCommon photoCommon].tempCameraPreviewView = tempCameraPreviewView;
             };
@@ -1842,6 +1842,7 @@ HXVideoEditViewControllerDelegate
 - (UIView *)previewView {
     if (!_previewView) {
         _previewView = [[UIView alloc] init];
+        _previewView.backgroundColor = [UIColor colorWithRed:246/255.0 green:247/255.0  blue:248/255.0  alpha:1];
     }
     return _previewView;
 }
@@ -2779,7 +2780,7 @@ HXVideoEditViewControllerDelegate
 }
 - (void)changeDoneBtnFrame {
     CGFloat width = self.doneBtn.titleLabel.hx_getTextWidth;
-    self.doneBtn.hx_w = width + 30;
+    self.doneBtn.hx_w = width + 28;
     if (self.doneBtn.hx_w < 50) {
         self.doneBtn.hx_w = 50;
     }

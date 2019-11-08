@@ -424,14 +424,6 @@ HXVideoEditViewControllerDelegate
             }
         }
     }
-    if ([selectBtnBgColor isEqual:[UIColor whiteColor]]) {
-        [_selectBtn setTitleColor:[UIColor blackColor] forState:UIControlStateSelected];
-    }else {
-        [_selectBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
-    }
-    if (selectBtnTitleColor) {
-        [_selectBtn setTitleColor:selectBtnTitleColor forState:UIControlStateSelected];
-    }
 }
 - (void)setupUI {
     [self.view addSubview:self.collectionView];
@@ -464,7 +456,11 @@ HXVideoEditViewControllerDelegate
         self.bottomView.selectCount = [self.manager selectedCount];
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.selectBtn];
         self.selectBtn.selected = model.selected;
-        [self.selectBtn setTitle:model.selectIndexStr forState:UIControlStateSelected];
+        if (model.selected) {
+            [self.selectBtn setBackgroundImage:[UIImage hx_imageNamed:@"hx_compose_guide_check_box_select"] forState:UIControlStateNormal];
+        } else {
+            [self.selectBtn setBackgroundImage:[UIImage hx_imageNamed:@"hx_compose_guide_check_box_default"] forState:UIControlStateNormal];
+        }
         if (self.manager.configuration.singleSelected) {
             self.selectBtn.hidden = YES;
             if (self.manager.configuration.singleJumpEdit) {
@@ -519,6 +515,7 @@ HXVideoEditViewControllerDelegate
     if (button.selected) {
         button.selected = NO;
         [self.manager beforeSelectedListdeletePhotoModel:model];
+        [button setBackgroundImage:[UIImage hx_imageNamed:@"hx_compose_guide_check_box_default"] forState:UIControlStateNormal];
     }else {
         NSString *str = [self.manager maximumOfJudgment:model];
         if (str) {
@@ -556,14 +553,8 @@ HXVideoEditViewControllerDelegate
 #endif
         [self.manager beforeSelectedListAddPhotoModel:model];
         button.selected = YES;
-        [button setTitle:model.selectIndexStr forState:UIControlStateSelected];
-        CAKeyframeAnimation *anim = [CAKeyframeAnimation animationWithKeyPath:@"transform.scale"];
-        anim.duration = 0.25;
-        anim.values = @[@(1.2),@(0.8),@(1.1),@(0.9),@(1.0)];
-        [button.layer addAnimation:anim forKey:@""];
+        [button setBackgroundImage:[UIImage hx_imageNamed:@"hx_compose_guide_check_box_select"] forState:UIControlStateNormal];
     }
-    UIColor *themeColor = [HXPhotoCommon photoCommon].isDark ? [UIColor whiteColor] : self.manager.configuration.themeColor;
-    button.backgroundColor = button.selected ? themeColor : nil;
     if ([self.delegate respondsToSelector:@selector(photoPreviewControllerDidSelect:model:)]) {
         [self.delegate photoPreviewControllerDidSelect:self model:model];
     }
@@ -794,10 +785,12 @@ HXVideoEditViewControllerDelegate
             self.subTitleLb.text = [NSString stringWithFormat:@"%@  %@",model.barTitle,model.barSubTitle];
         }
         self.selectBtn.selected = model.selected;
-        [self.selectBtn setTitle:model.selectIndexStr forState:UIControlStateSelected];
-        
-        UIColor *themeColor = [HXPhotoCommon photoCommon].isDark ? self.manager.configuration.previewDarkSelectBgColor : self.manager.configuration.themeColor;
-        self.selectBtn.backgroundColor = self.selectBtn.selected ? themeColor : nil;
+        if (model.selected) {
+            [self.selectBtn setBackgroundImage:[UIImage hx_imageNamed:@"hx_compose_guide_check_box_select"] forState:UIControlStateNormal];
+        } else {
+            [self.selectBtn setBackgroundImage:[UIImage hx_imageNamed:@"hx_compose_guide_check_box_default"] forState:UIControlStateNormal];
+        }
+    
         if (self.outside) {
             if ([self.modelArray containsObject:model] && self.layoutSubviewsCompletion) {
                 self.bottomView.currentIndex = [self.modelArray indexOfObject:model];
@@ -960,12 +953,11 @@ HXVideoEditViewControllerDelegate
     }
     if (self.manager.configuration.singleSelected) {
         if (model.subType == HXPhotoModelMediaSubTypeVideo) {
-            ;
             if (model.videoDuration >= self.manager.configuration.videoMaximumSelectDuration + 1) {
-                [self.view hx_showImageHUDText:[NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"视频大于%ld秒，无法选择"], self.manager.configuration.videoMaximumSelectDuration]];
+                [self.view hx_showImageHUDText:[NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"请选择%lds以内的视频"], self.manager.configuration.videoMaximumSelectDuration]];
                 return;
             }else if (model.videoDuration < self.manager.configuration.videoMinimumSelectDuration) {
-                [self.view hx_showImageHUDText:[NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"视频少于%ld秒，无法选择"], self.manager.configuration.videoMinimumSelectDuration]];
+                [self.view hx_showImageHUDText:[NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"请选择%lds及以上的视频"], self.manager.configuration.videoMinimumSelectDuration]];
                 return;
             }
         }
@@ -1003,10 +995,10 @@ HXVideoEditViewControllerDelegate
     if ([self.manager selectedCount] == 0) {
         if (model.subType == HXPhotoModelMediaSubTypeVideo) {
             if (model.videoDuration >= self.manager.configuration.videoMaximumSelectDuration + 1) {
-                [self.view hx_showImageHUDText:[NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"视频大于%ld秒，无法选择"], self.manager.configuration.videoMaximumSelectDuration]];
+                [self.view hx_showImageHUDText:[NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"请选择%lds以内的视频"], self.manager.configuration.videoMaximumSelectDuration]];
                 return;
             }else if (model.videoDuration < self.manager.configuration.videoMinimumSelectDuration) {
-                [self.view hx_showImageHUDText:[NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"视频少于%ld秒，无法选择"], self.manager.configuration.videoMinimumSelectDuration]];
+                [self.view hx_showImageHUDText:[NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"请选择%lds及以上的视频"], self.manager.configuration.videoMinimumSelectDuration]];
                 return;
             }
         }
@@ -1203,7 +1195,7 @@ HXVideoEditViewControllerDelegate
         [_selectBtn addTarget:self action:@selector(didSelectClick:) forControlEvents:UIControlEventTouchUpInside];
         _selectBtn.hx_size = CGSizeMake(20, 20);
         [_selectBtn setEnlargeEdgeWithTop:0 right:0 bottom:20 left:20];
-        _selectBtn.layer.cornerRadius = 12;
+        _selectBtn.layer.cornerRadius = 10;
     }
     return _selectBtn;
 }
@@ -1727,6 +1719,8 @@ HXWeakSelf
             weakSelf.videoPlayBtn.hidden = NO;
             weakSelf.player = [AVPlayer playerWithPlayerItem:[AVPlayerItem playerItemWithAsset:avAsset]];
             weakSelf.playerLayer.player = weakSelf.player;
+            [weakSelf.videoPlayBtn setSelected:NO];
+            [weakSelf didPlayBtnClick:weakSelf.videoPlayBtn];
             [[NSNotificationCenter defaultCenter] addObserver:weakSelf selector:@selector(pausePlayerAndShowNaviBar) name:AVPlayerItemDidPlayToEndTimeNotification object:weakSelf.player.currentItem];
         } failed:^(NSDictionary *info, HXPhotoModel *model) {
             if (weakSelf.model != model) return;

@@ -1047,7 +1047,7 @@
         model.type = HXPhotoModelMediaTypeCamera;
         if (self.type == HXPhotoManagerSelectedTypeVideo) {
             model.cameraNormalImageNamed = @"hx_compose_photo_video";
-            model.cameraPreviewImageNamed = @"hx_takePhoto";
+            model.cameraPreviewImageNamed = @"hx_takeVideo";
         }else if (self.type == HXPhotoManagerSelectedTypePhoto) {
             model.cameraNormalImageNamed = @"hx_compose_photo_photograph";
             model.cameraPreviewImageNamed = @"hx_takePhoto";

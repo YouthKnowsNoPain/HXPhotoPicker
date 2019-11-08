@@ -142,6 +142,7 @@
     }
     [self.doneBtn setTitle:[NSString stringWithFormat:@"%@%@",[NSBundle hx_localizedStringForKey:@"完成"], text] forState:UIControlStateNormal];
     [self changeDoneBtnFrame];
+    [self changeColor];
 }
 #pragma mark - < UICollectionViewDataSource >
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
@@ -209,7 +210,7 @@
     }else {
         
         CGFloat width = self.doneBtn.titleLabel.hx_getTextWidth;
-        self.doneBtn.hx_w = width + 20;
+        self.doneBtn.hx_w = width + 28;
         if (self.doneBtn.hx_w < 50) {
             self.doneBtn.hx_w = 50;
         }
@@ -237,7 +238,7 @@
     [super layoutSubviews];
     self.bgView.frame = self.bounds;
  
-    self.doneBtn.frame = CGRectMake(0, 0, 50, 30);
+    self.doneBtn.frame = CGRectMake(0, 0, 50, 32);
     self.doneBtn.center = CGPointMake(self.doneBtn.center.x, 25);
     
     
@@ -269,7 +270,8 @@
         [_doneBtn setTitleColor:selectedTitleColor forState:UIControlStateNormal];
         [_doneBtn setTitleColor:[selectedTitleColor colorWithAlphaComponent:0.5] forState:UIControlStateDisabled];
     }
-    _doneBtn.backgroundColor = [HXPhotoCommon photoCommon].isDark ? [UIColor colorWithRed:0.2 green:0.2 blue:0.2 alpha:1] : themeColor;
+    UIColor *doneBtnColor = [UIColor colorWithRed:67/255.0 green:122/255.0 blue:235/255.0 alpha:1];
+    self.doneBtn.backgroundColor = doneBtnColor;
     [_editBtn setTitleColor:themeColor forState:UIControlStateNormal];
     [_editBtn setTitleColor:[themeColor colorWithAlphaComponent:0.5] forState:UIControlStateDisabled];
 }
@@ -298,7 +300,7 @@
 }
 - (UICollectionView *)collectionView {
     if (!_collectionView) {
-        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0,self.hx_w - 12 - 50, 50) collectionViewLayout:self.flowLayout];
+        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:self.flowLayout];
         _collectionView.backgroundColor = [UIColor clearColor];
         _collectionView.dataSource = self;
         _collectionView.delegate = self;
@@ -325,8 +327,10 @@
     if (!_doneBtn) {
         _doneBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_doneBtn setTitle:[NSBundle hx_localizedStringForKey:@"完成"] forState:UIControlStateNormal];
-        _doneBtn.titleLabel.font = [UIFont systemFontOfSize:14];
-        _doneBtn.layer.cornerRadius = 3;
+        _doneBtn.titleLabel.font = [UIFont systemFontOfSize:14 weight:UIFontWeightMedium];
+        [_doneBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [_doneBtn setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:0.5] forState:UIControlStateDisabled];
+        _doneBtn.layer.cornerRadius = 16;
         [_doneBtn addTarget:self action:@selector(didDoneBtnClick) forControlEvents:UIControlEventTouchUpInside];
     }
     return _doneBtn;
