@@ -50,7 +50,7 @@
 
 - (void)setup {
     
-    self.minProgress = 0.1;
+    _minProgress = 0;
     
     self.backgroundColor = [UIColor clearColor];
     CAShapeLayer *whiteCircleLayer = [CAShapeLayer layer];
@@ -150,8 +150,8 @@
 - (void)setProgress:(CGFloat)progress {
     _progress = progress; 
     self.progressLayer.hidden = NO;
-    self.minProgressMark.hidden = NO;
-    self.minProgressLayer.hidden = NO;
+    self.minProgressMark.hidden = _minProgress <= 0 ? YES : NO;
+    self.minProgressLayer.hidden = _minProgress <= 0 ? YES : NO;
     _circleLayer.cornerRadius = 2.0;
     _circleLayer.masksToBounds = YES;
     _circleLayer.bounds = CGRectMake(0, 0, 20.0, 20.0);
@@ -180,6 +180,11 @@
     CGFloat positionY = (self.frame.size.width/2.0) * (1 - sin(angle));
     CGFloat positionX = (self.frame.size.width/2.0) * (1 + cos(angle));
     self.minProgressMark.position = CGPointMake(positionX, positionY);
+    UIBezierPath *minProgressPath = [UIBezierPath bezierPathWithArcCenter:CGPointMake(self.frame.size.width * 0.5, self.frame.size.height * 0.5)
+                                                                      radius:self.frame.size.width * 0.5 startAngle:-M_PI/2.0
+                                                                    endAngle:_minProgress*2*M_PI-M_PI/2.0
+                                                                   clockwise:true];
+    self.minProgressLayer.path = minProgressPath.CGPath;
 }
 
 - (UIBezierPath *)pathForProgress:(CGFloat)progress {

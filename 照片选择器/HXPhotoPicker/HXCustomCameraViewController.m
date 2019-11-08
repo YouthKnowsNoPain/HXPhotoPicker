@@ -326,8 +326,9 @@
         if (!self.videoURL) {
             model = [HXPhotoModel photoModelWithImage:self.imageView.image];
         }else {
-            if (self.time < 3) {
-                [self.view hx_showImageHUDText:[NSBundle hx_localizedStringForKey:@"录制时间少于3秒"]];
+            if (self.time < _manager.configuration.videoMinimumSelectDuration) {
+                NSString *tip = [NSString stringWithFormat:@"录制时间少于%ld秒", _manager.configuration.videoMinimumSelectDuration];
+                [self.view hx_showImageHUDText:[NSBundle hx_localizedStringForKey:tip]];
                 return;
             }
             [self.playVideoView stopPlay];
@@ -368,15 +369,34 @@
     [self.cameraController stopSession];
     self.cameraController.flashMode = 0;
     self.cameraController.torchMode = 0;
+    
+    if (self.manager.configuration.restoreNavigationBar && self.isOutside) {
+        [UINavigationBar appearance].translucent = NO;
+    }
+    
+    // 如果是视频，只能选一个，也不能编辑的时候
+    if (model.type == HXPhotoModelMediaTypeVideo &&
+        !_manager.configuration.videoCanEdit &&
+        (_manager.configuration.videoMaxNum <= 1 || _manager.configuration.singleSelected)) {
+        HXWeakSelf
+        [self dismissViewControllerAnimated:false completion:^{
+            if ([weakSelf.delegate respondsToSelector:@selector(customCameraViewController:didDone:)]) {
+                [weakSelf.delegate customCameraViewController:weakSelf didDone:model];
+            }
+            if (weakSelf.doneBlock) {
+                weakSelf.doneBlock(model, weakSelf);
+            }
+        }];
+        return;
+    }
+    
     if ([self.delegate respondsToSelector:@selector(customCameraViewController:didDone:)]) {
         [self.delegate customCameraViewController:self didDone:model];
     }
     if (self.doneBlock) {
         self.doneBlock(model, self);
     }
-    if (self.manager.configuration.restoreNavigationBar && self.isOutside) {
-        [UINavigationBar appearance].translucent = NO;
-    }
+    
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 - (void)didchangeCameraClick {
@@ -469,7 +489,8 @@
         self.cancelBtn.selected = NO;
         self.flashBtn.hidden = NO;
         self.changeCameraBtn.hidden = NO;
-        [self.view hx_showImageHUDText:[NSBundle hx_localizedStringForKey:@"3秒内的视频无效哦~"]];
+        NSString *tip = [NSString stringWithFormat:@"%ld秒内的视频无效哦~", _manager.configuration.videoMinimumSelectDuration];
+        [self.view hx_showImageHUDText:[NSBundle hx_localizedStringForKey:tip]];
     }else {
         [self.cameraController stopSession];
         self.previewView.tapToFocusEnabled = NO;
@@ -620,10 +641,9 @@
 - (UIButton *)cancelBtn {
     if (!_cancelBtn) {
         _cancelBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_cancelBtn setTitle:[NSBundle hx_localizedStringForKey:@"重拍"] forState:UIControlStateSelected];
+        [_cancelBtn setImage:[UIImage hx_imageNamed:@"black_white"] forState:UIControlStateSelected];
         [_cancelBtn setTitle:@"" forState:UIControlStateNormal];
         [_cancelBtn setImage:[UIImage hx_imageNamed:@"hx_faceu_cancel"] forState:UIControlStateNormal];
-        [_cancelBtn setImage:[[UIImage alloc] init] forState:UIControlStateSelected];
         [_cancelBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
         [_cancelBtn addTarget:self action:@selector(cancelClick:) forControlEvents:UIControlEventTouchUpInside];
         _cancelBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
@@ -678,12 +698,16 @@
     if (!_doneBtn) {
         _doneBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_doneBtn setTitle:[NSBundle hx_localizedStringForKey:@"完成"] forState:UIControlStateNormal];
-        [_doneBtn setTitleShadowColor:[[UIColor blackColor] colorWithAlphaComponent:0.4] forState:UIControlStateNormal];
-        [_doneBtn.titleLabel setShadowOffset:CGSizeMake(1, 2)];
-        _doneBtn.hx_h = 40;
-        _doneBtn.hx_w = [_doneBtn.titleLabel hx_getTextWidth];
-        _doneBtn.hx_x = self.view.hx_w - 15 - _doneBtn.hx_w;
-        _doneBtn.hx_y = self.view.hx_h - self.previewView.hx_y - _doneBtn.hx_h;
+        [_doneBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        _doneBtn.backgroundColor = [UIColor colorWithRed:67.0/255.0 green: 122.0/255.0 blue:235.0/255.0 alpha:1];
+        _doneBtn.titleLabel.font = [UIFont systemFontOfSize:14];
+        _doneBtn.clipsToBounds = YES;
+        _doneBtn.layer.cornerRadius = 16.0;
+        _doneBtn.hx_h = 32;
+//        _doneBtn.hx_w = [_doneBtn.titleLabel hx_getTextWidth];
+        _doneBtn.hx_w = 75;
+        _doneBtn.hx_x = self.view.hx_w - 16 - _doneBtn.hx_w;
+        _doneBtn.hx_y = self.view.hx_h - self.previewView.hx_y - _doneBtn.hx_h - 18;
         [_doneBtn addTarget:self action:@selector(didDoneBtnClick) forControlEvents:UIControlEventTouchUpInside];
     }
     return _doneBtn;
@@ -802,7 +826,8 @@
 }
 - (void)setupVideoType {
     self.mode = HXCustomCameraBottomViewModeVideo;
-    self.titleLb.text = [NSBundle hx_localizedStringForKey:@"点击录制\n至少需拍摄3秒以上哦"];
+    NSString *tip = [NSString stringWithFormat:@"点击录制\n至少需拍摄%ld秒以上哦", _manager.configuration.videoMinimumSelectDuration];
+    self.titleLb.text = [NSBundle hx_localizedStringForKey:tip];
     self.titleLb.alpha = 1;
     self.photoBtn.hidden = YES;
     self.videoBtn.hidden = YES;
@@ -938,7 +963,8 @@
         return;
     }
     self.mode = HXCustomCameraBottomViewModeVideo;
-    self.titleLb.text = [NSBundle hx_localizedStringForKey:@"点击录制\n至少需拍摄3秒以上哦"];
+    NSString *tip = [NSString stringWithFormat:@"点击录制\n至少需拍摄%ld秒以上哦", _manager.configuration.videoMinimumSelectDuration];
+    self.titleLb.text = [NSBundle hx_localizedStringForKey:tip];
     self.titleLb.alpha = 0;
     self.videoBtn.enabled = NO;
     self.photoBtn.enabled = YES;

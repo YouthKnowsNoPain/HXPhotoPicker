@@ -595,6 +595,13 @@ HXVideoEditViewControllerDelegate
             [self.navigationController pushViewController:previewVC animated:NO];
         }
     }
+    
+    // 如果是视频，只能选一个m，也不能编辑的时候
+    if (model.type == HXPhotoModelMediaTypeVideo &&
+        !_manager.configuration.videoCanEdit &&
+        (_manager.configuration.videoMaxNum <= 1 || _manager.configuration.singleSelected)) {
+        [self dismissVC];
+    }
 }
 - (void)collectionViewAddModel:(HXPhotoModel *)model beforeModel:(HXPhotoModel *)beforeModel {
     // 判断类型
