@@ -2652,6 +2652,7 @@ HXVideoEditViewControllerDelegate
 - (void)setManager:(HXPhotoManager *)manager {
     _manager = manager;
     self.originalBtn.hidden = self.manager.configuration.hideOriginalBtn;
+    self.previewBtn.hidden = self.manager.configuration.hidePreViewBtn;
     if (manager.type == HXPhotoManagerSelectedTypePhoto) {
         self.editBtn.hidden = !manager.configuration.photoCanEdit;
     }else if (manager.type == HXPhotoManagerSelectedTypeVideo) {
@@ -2670,7 +2671,7 @@ HXVideoEditViewControllerDelegate
         selectedTitleColor = [UIColor whiteColor];
         self.bgView.barTintColor = [UIColor blackColor];
     }else {
-        self.bgView.barTintColor = nil;
+        self.bgView.barTintColor = [UIColor whiteColor];
         themeColor = self.manager.configuration.themeColor;
         selectedTitleColor = self.manager.configuration.selectedTitleColor;
     }
@@ -2678,17 +2679,15 @@ HXVideoEditViewControllerDelegate
     [self.previewBtn setTitleColor:themeColor forState:UIControlStateNormal];
     [self.previewBtn setTitleColor:[themeColor colorWithAlphaComponent:0.5] forState:UIControlStateDisabled];
     
-    [self.originalBtn setTitleColor:themeColor forState:UIControlStateNormal];
-    [self.originalBtn setTitleColor:[themeColor colorWithAlphaComponent:0.5] forState:UIControlStateDisabled];
-    
-    UIImage *originalNormalImage = [[UIImage hx_imageNamed:self.manager.configuration.originalNormalImageName] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-    UIImage *originalSelectedImage = [[UIImage hx_imageNamed:self.manager.configuration.originalSelectedImageName] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    UIColor *originaColor = [UIColor colorWithRed:145/255.0 green:151/255.0 blue:163/255.0 alpha:1];
+    UIColor *selectOriginaColor = [UIColor colorWithRed:67/255.0 green:122/255.0 blue:235/255.0 alpha:1];
+    [self.originalBtn setTitleColor:originaColor forState:UIControlStateNormal];
+    [self.originalBtn setTitleColor:selectOriginaColor forState:UIControlStateSelected];
+
+    UIImage *originalNormalImage = [[UIImage hx_imageNamed:self.manager.configuration.originalNormalImageName] imageWithRenderingMode:UIImageRenderingModeAutomatic];
+    UIImage *originalSelectedImage = [[UIImage hx_imageNamed:self.manager.configuration.originalSelectedImageName] imageWithRenderingMode:UIImageRenderingModeAutomatic];
     [self.originalBtn setImage:originalNormalImage forState:UIControlStateNormal];
     [self.originalBtn setImage:originalSelectedImage forState:UIControlStateSelected];
-    self.originalBtn.imageView.tintColor = themeColor;
-    
-    [self.editBtn setTitleColor:themeColor forState:UIControlStateNormal];
-    [self.editBtn setTitleColor:[themeColor colorWithAlphaComponent:0.5] forState:UIControlStateDisabled];
     if ([themeColor isEqual:[UIColor whiteColor]]) {
         [self.doneBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [self.doneBtn setTitleColor:[[UIColor blackColor] colorWithAlphaComponent:0.5] forState:UIControlStateDisabled];
@@ -2726,8 +2725,8 @@ HXVideoEditViewControllerDelegate
             [self.doneBtn setTitle:[NSString stringWithFormat:@"%@(%ld)",[NSBundle hx_localizedStringForKey:@"完成"],(long)selectCount] forState:UIControlStateNormal];
         }
     }
-    UIColor *themeColor = [HXPhotoCommon photoCommon].isDark ? [UIColor colorWithRed:0.2 green:0.2 blue:0.2 alpha:1] : self.manager.configuration.themeColor;
-    self.doneBtn.backgroundColor = self.doneBtn.enabled ? themeColor : [themeColor colorWithAlphaComponent:0.5];
+    UIColor *doneBtnColor = [UIColor colorWithRed:67/255.0 green:122/255.0 blue:235/255.0 alpha:1];
+    self.doneBtn.backgroundColor = self.doneBtn.enabled ? doneBtnColor : [doneBtnColor colorWithAlphaComponent:0.5];
     
     if (!self.manager.configuration.selectTogether) {
         if (self.manager.selectedPhotoArray.count) {
@@ -2787,18 +2786,21 @@ HXVideoEditViewControllerDelegate
 }
 - (void)changeDoneBtnFrame {
     CGFloat width = self.doneBtn.titleLabel.hx_getTextWidth;
-    self.doneBtn.hx_w = width + 20;
+    self.doneBtn.hx_w = width + 30;
     if (self.doneBtn.hx_w < 50) {
         self.doneBtn.hx_w = 50;
     }
     self.doneBtn.hx_x = self.hx_w - 12 - self.doneBtn.hx_w;
 }
 - (void)updateOriginalBtnFrame {
+    if (self.previewBtn.hidden) {
+        self.previewBtn.frame = CGRectZero;
+    }
     if (self.editBtn.hidden) {
-        self.originalBtn.frame = CGRectMake(CGRectGetMaxX(self.previewBtn.frame) + 10, 0, 30, 50);
+        self.originalBtn.frame = CGRectMake(CGRectGetMaxX(self.previewBtn.frame) + 16, 0, 30, 50);
         
     }else {
-        self.originalBtn.frame = CGRectMake(CGRectGetMaxX(self.editBtn.frame) + 10, 0, 30, 50);
+        self.originalBtn.frame = CGRectMake(CGRectGetMaxX(self.editBtn.frame) + 16, 0, 30, 50);
     }
     self.originalBtn.hx_w = self.originalBtn.titleLabel.hx_getTextWidth + 30;
     if (CGRectGetMaxX(self.originalBtn.frame) > self.doneBtn.hx_x - 25) {
@@ -2855,7 +2857,7 @@ HXVideoEditViewControllerDelegate
     self.editBtn.frame = CGRectMake(CGRectGetMaxX(self.previewBtn.frame) + 10, 0, 0, 50);
     self.editBtn.hx_w = self.editBtn.titleLabel.hx_getTextWidth;
     
-    self.doneBtn.frame = CGRectMake(0, 0, 50, 30);
+    self.doneBtn.frame = CGRectMake(0, 0, 50, 32);
     self.doneBtn.center = CGPointMake(self.doneBtn.center.x, 25);
     [self changeDoneBtnFrame];
     
@@ -2882,10 +2884,10 @@ HXVideoEditViewControllerDelegate
     if (!_doneBtn) {
         _doneBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_doneBtn setTitle:[NSBundle hx_localizedStringForKey:@"完成"] forState:UIControlStateNormal];
-        _doneBtn.titleLabel.font = [UIFont systemFontOfSize:14];
+        _doneBtn.titleLabel.font = [UIFont systemFontOfSize:14 weight:UIFontWeightMedium];
         [_doneBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [_doneBtn setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:0.5] forState:UIControlStateDisabled];
-        _doneBtn.layer.cornerRadius = 3;
+        _doneBtn.layer.cornerRadius = 16;
         _doneBtn.enabled = NO;
         [_doneBtn addTarget:self action:@selector(didDoneBtnClick) forControlEvents:UIControlEventTouchUpInside];
     }

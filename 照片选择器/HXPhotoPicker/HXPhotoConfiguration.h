@@ -364,6 +364,11 @@ HXPhotoPreviewViewController;
 @property (assign, nonatomic) BOOL hideOriginalBtn;
 
 /**
+ 是否隐藏预览按钮  默认 NO
+ */
+@property (assign, nonatomic) BOOL hidePreViewBtn;
+
+/**
  sectionHeader 是否显示照片的位置信息 默认 5、6不显示，其余的显示
  */
 @property (assign, nonatomic) BOOL sectionHeaderShowPhotoLocation;

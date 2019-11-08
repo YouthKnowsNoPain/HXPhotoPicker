@@ -1045,16 +1045,16 @@
     if (self.configuration.openCamera) {
         HXPhotoModel *model = [[HXPhotoModel alloc] init];
         model.type = HXPhotoModelMediaTypeCamera;
-//        if (photoArray.count == 0 && videoArray.count != 0) {
-//            model.cameraNormalImageNamed = @"hx_compose_photo_video";
-//            model.cameraPreviewImageNamed = @"hx_takePhoto";
-//        }else if (photoArray.count == 0) {
-//            model.cameraNormalImageNamed = @"hx_compose_photo_photograph";
-//            model.cameraPreviewImageNamed = @"hx_takePhoto";
-//        }else {
+        if (self.type == HXPhotoManagerSelectedTypeVideo) {
+            model.cameraNormalImageNamed = @"hx_compose_photo_video";
+            model.cameraPreviewImageNamed = @"hx_takePhoto";
+        }else if (self.type == HXPhotoManagerSelectedTypePhoto) {
             model.cameraNormalImageNamed = @"hx_compose_photo_photograph";
             model.cameraPreviewImageNamed = @"hx_takePhoto";
-//        }
+        }else {
+            model.cameraNormalImageNamed = @"hx_compose_photo_photograph";
+            model.cameraPreviewImageNamed = @"hx_takePhoto";
+        }
         if (!self.configuration.reverseDate) {
             if (self.configuration.showDateSectionHeader) {
                 model.dateSection = dateArray.count;
