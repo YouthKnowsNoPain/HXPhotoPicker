@@ -72,6 +72,21 @@
     // Do any additional setup after loading the view.
 }
 
+- (void)navigationBackClick {
+    if ((self.presentedViewController != nil) && (self.childViewControllers.count == 1)) {
+        [self dismissViewControllerAnimated:true completion:nil];
+    } else {
+        [self popViewControllerAnimated:true];
+    }
+}
+
+- (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated {
+    // 这个navigationBackClick 方法不走，好像是因为title 为空， backItem点不中了
+    UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:self action:@selector(navigationBackClick)];
+    self.viewControllers.lastObject.navigationItem.backBarButtonItem = backItem;
+    [super pushViewController:viewController animated:animated];
+}
+
 #pragma mark - < HXAlbumListViewControllerDelegate >
 - (void)albumListViewControllerDidCancel:(HXAlbumListViewController *)albumListViewController {
     if ([self.hx_delegate respondsToSelector:@selector(photoNavigationViewControllerDidCancel:)]) {
