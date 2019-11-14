@@ -2022,8 +2022,10 @@ HXVideoEditViewControllerDelegate
     // 当前是否需要隐藏选择按钮
     if (model.needHideSelectBtn) {
         self.selectBtn.userInteractionEnabled = NO;
+        self.selectBtn.hidden = YES;
     }else {
         self.selectBtn.userInteractionEnabled = !model.isICloud;
+        self.selectBtn.hidden = model.isICloud;
     }
     
     if (model.isICloud) {
@@ -2113,6 +2115,7 @@ HXVideoEditViewControllerDelegate
             if (weakSelf.model == model) {
                 weakSelf.model.isICloud = NO;
                 weakSelf.downloadView.progress = 1;
+                weakSelf.selectBtn.hidden = NO;
                 if ([weakSelf.delegate respondsToSelector:@selector(photoViewCellRequestICloudAssetComplete:)]) {
                     [weakSelf.delegate photoViewCellRequestICloudAssetComplete:weakSelf];
                 }
@@ -2137,6 +2140,7 @@ HXVideoEditViewControllerDelegate
             if (weakSelf.model == model) {
                 weakSelf.model.isICloud = NO;
                 weakSelf.downloadView.progress = 1;
+                weakSelf.selectBtn.hidden = NO;
                 if ([weakSelf.delegate respondsToSelector:@selector(photoViewCellRequestICloudAssetComplete:)]) {
                     [weakSelf.delegate photoViewCellRequestICloudAssetComplete:weakSelf];
                 }
