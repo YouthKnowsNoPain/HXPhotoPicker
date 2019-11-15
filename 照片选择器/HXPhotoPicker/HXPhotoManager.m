@@ -1223,7 +1223,7 @@
     }
     if (model.subType == HXPhotoModelMediaSubTypeVideo) {
         if (model.videoDuration < self.configuration.videoMinimumSelectDuration) {
-            return [NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"请选择%lds以上的视频"], self.configuration.videoMinimumSelectDuration];
+            return [NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"请选择%lds以上的视频"], self.configuration.videoMinimumSelectDuration - 1];
         }else if (model.videoDuration >= self.configuration.videoMaximumSelectDuration + 1) {
             return [NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"请选择%lds以内的视频"], self.configuration.videoMaximumSelectDuration];
         }

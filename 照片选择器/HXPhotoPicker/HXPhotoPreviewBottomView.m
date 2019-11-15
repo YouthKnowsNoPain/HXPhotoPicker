@@ -84,7 +84,7 @@
                 tipText = [NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"视频大于%ld秒，无法选择"], self.manager.configuration.videoMaximumSelectDuration];
             }
         }else if (model.videoDuration < self.manager.configuration.videoMinimumSelectDuration) {
-            tipText = [NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"视频少于%ld秒，无法选择"], self.manager.configuration.videoMinimumSelectDuration];
+            tipText = [NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"请选择%lds以上的视频"], self.manager.configuration.videoMinimumSelectDuration - 1];
         }
     }
     self.tipLb.text = tipText;

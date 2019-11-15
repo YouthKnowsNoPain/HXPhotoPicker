@@ -855,7 +855,7 @@ HXVideoEditViewControllerDelegate
                         }
                         weakSelf.manager.configuration.useCameraComplete = ^(HXPhotoModel *model) {
                             if (model.videoDuration < weakSelf.manager.configuration.videoMinimumSelectDuration) {
-                                [weakSelf.view hx_showImageHUDText:[NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"视频需录制%lds以上"], weakSelf.manager.configuration.videoMinimumSelectDuration]];
+                                [weakSelf.view hx_showImageHUDText:[NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"视频需录制%lds以上"], weakSelf.manager.configuration.videoMinimumSelectDuration - 1]];
                             }else if (model.videoDuration >= weakSelf.manager.configuration.videoMaximumSelectDuration + 1) {
                                 [weakSelf.view hx_showImageHUDText:[NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"视频需录制%lds以下"], weakSelf.manager.configuration.videoMaximumSelectDuration]];
                             }

@@ -959,7 +959,7 @@ HXVideoEditViewControllerDelegate
                 [self.view hx_showImageHUDText:[NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"请选择%lds以内的视频"], self.manager.configuration.videoMaximumSelectDuration]];
                 return;
             }else if (model.videoDuration < self.manager.configuration.videoMinimumSelectDuration) {
-                [self.view hx_showImageHUDText:[NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"请选择%lds以上的视频"], self.manager.configuration.videoMinimumSelectDuration]];
+                [self.view hx_showImageHUDText:[NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"请选择%lds以上的视频"], self.manager.configuration.videoMinimumSelectDuration - 1]];
                 return;
             }
         }
@@ -1000,7 +1000,7 @@ HXVideoEditViewControllerDelegate
                 [self.view hx_showImageHUDText:[NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"请选择%lds以内的视频"], self.manager.configuration.videoMaximumSelectDuration]];
                 return;
             }else if (model.videoDuration < self.manager.configuration.videoMinimumSelectDuration) {
-                [self.view hx_showImageHUDText:[NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"请选择%lds及以上的视频"], self.manager.configuration.videoMinimumSelectDuration]];
+                [self.view hx_showImageHUDText:[NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"请选择%lds及以上的视频"], self.manager.configuration.videoMinimumSelectDuration - 1]];
                 return;
             }
         }
