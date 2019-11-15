@@ -145,7 +145,10 @@
     self.circleLayer.bounds = CGRectMake(0, 0, self.frame.size.width-6.0, self.frame.size.width-6.0);
     self.circleLayer.cornerRadius = _centerCircleLayer.bounds.size.width/2.0;;
     self.whiteCircleLayer.strokeColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:1].CGColor;
+    [CATransaction begin];
+    [CATransaction setDisableActions:YES];
     self.currentProgress = 0;
+    [CATransaction commit];
 }
 - (void)setProgress:(CGFloat)progress {
     _progress = progress; 

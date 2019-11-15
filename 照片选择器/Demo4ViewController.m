@@ -65,6 +65,7 @@
         _manager.configuration.hidePreViewBtn = YES;
         _manager.configuration.selectedTitleColor = [UIColor whiteColor];
         _manager.configuration.movableCropBoxEditSize = YES;
+        _manager.configuration.videoMinimumSelectDuration = 4;
 //        _manager.configuration.requestImageAfterFinishingSelection = NO;
 //        _manager.configuration.albumShowMode = HXPhotoAlbumShowModePopup;
 //        _manager.configuration.movableCropBoxCustomRatio = CGPointMake(1, 1);
