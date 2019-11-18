@@ -567,9 +567,12 @@ HXVideoEditViewControllerDelegate
 - (void)customCameraViewController:(HXCustomCameraViewController *)viewController didDone:(HXPhotoModel *)model {
     model.currentAlbumIndex = self.albumModel.index;
     model.clarityScale = self.manager.configuration.clarityScale;
-    if (!self.manager.configuration.singleSelected) {
-        [self.manager beforeListAddCameraTakePicturesModel:model];
-    }
+//    if (!self.manager.configuration.singleSelected) {
+//        [self.manager beforeListAddCameraTakePicturesModel:model];
+//    }
+    // 不管是单选还是多选都加进列表
+    [self.manager beforeListAddCameraTakePicturesModel:model];
+    
     [self collectionViewAddModel:model beforeModel:nil];
     
 //    if (self.manager.configuration.singleSelected) {
