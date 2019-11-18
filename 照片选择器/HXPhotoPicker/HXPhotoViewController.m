@@ -600,8 +600,9 @@ HXVideoEditViewControllerDelegate
 //    }
     
     // 如果是视频，只能选一个m，也不能编辑的时候
-    if (model.type == HXPhotoModelMediaTypeVideo &&
-        (_manager.configuration.videoMaxNum <= 1 || _manager.configuration.singleSelected)) {
+    if ((model.type == HXPhotoModelMediaTypeVideo && _manager.configuration.videoMaxNum <= 1) ||
+        (model.type == HXPhotoModelMediaTypePhoto && _manager.configuration.photoMaxNum <= 1) ||
+        _manager.configuration.singleSelected) {
         [self dismissVC];
     }
 }
