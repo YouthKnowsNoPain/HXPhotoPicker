@@ -285,6 +285,7 @@
     [self.cameraController stopSession];
 } 
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     if (_locationManager) {
         [self.locationManager stopUpdatingLocation];
     }
@@ -1093,6 +1094,8 @@
     self.playerLayer.backgroundColor = [UIColor blackColor].CGColor;
     self.playerLayer.videoGravity = AVLayerVideoGravityResizeAspect;
     [self.layer addSublayer:self.playerLayer];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(moviePlayDidEnd:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
 }
 - (void)setVideoURL:(NSURL *)videoURL {
     _videoURL = videoURL;
@@ -1103,4 +1106,10 @@
 - (void)stopPlay {
     [self.playerLayer.player pause];
 }
+
+- (void)moviePlayDidEnd:(NSNotification*)notification{
+    [self.playerLayer.player.currentItem seekToTime:kCMTimeZero];
+    [self.playerLayer.player play];
+}
+
 @end
