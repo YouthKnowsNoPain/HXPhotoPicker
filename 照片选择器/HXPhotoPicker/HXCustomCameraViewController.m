@@ -375,8 +375,9 @@
     }
     
     // 如果是视频，只能选一个，也不能编辑的时候
-    if (model.type == HXPhotoModelMediaTypeVideo &&
-        (_manager.configuration.videoMaxNum <= 1 || _manager.configuration.singleSelected)) {
+    if ((model.type == HXPhotoModelMediaTypeVideo && _manager.configuration.videoMaxNum <= 1) ||
+        (model.type == HXPhotoModelMediaTypePhoto && _manager.configuration.photoMaxNum <= 1) ||
+        _manager.configuration.singleSelected) {
         HXWeakSelf
         [self dismissViewControllerAnimated:false completion:^{
             if ([weakSelf.delegate respondsToSelector:@selector(customCameraViewController:didDone:)]) {
