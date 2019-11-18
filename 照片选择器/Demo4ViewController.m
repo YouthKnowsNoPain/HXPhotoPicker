@@ -164,6 +164,7 @@
     }];
 }
 - (void)albumListViewController:(HXAlbumListViewController *)albumListViewController didDoneAllList:(NSArray<HXPhotoModel *> *)allList photos:(NSArray<HXPhotoModel *> *)photoList videos:(NSArray<HXPhotoModel *> *)videoList original:(BOOL)original {
+    
     if (photoList.count > 0) {
         HXPhotoModel *model = photoList.firstObject;
         self.imageView.image = model.previewPhoto;
@@ -190,6 +191,7 @@
     }
 }
 - (void)photoViewController:(HXPhotoViewController *)photoViewController didDoneAllList:(NSArray<HXPhotoModel *> *)allList photos:(NSArray<HXPhotoModel *> *)photoList videos:(NSArray<HXPhotoModel *> *)videoList original:(BOOL)original {
+    
     if (photoList.count > 0) {
         HXPhotoModel *model = photoList.firstObject;
         self.imageView.image = model.previewPhoto;

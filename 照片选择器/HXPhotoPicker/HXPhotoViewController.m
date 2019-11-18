@@ -572,33 +572,32 @@ HXVideoEditViewControllerDelegate
     }
     [self collectionViewAddModel:model beforeModel:nil];
     
-    if (self.manager.configuration.singleSelected) {
-        if (model.subType == HXPhotoModelMediaSubTypePhoto) {
-            HXPhotoEditViewController *vc = [[HXPhotoEditViewController alloc] init];
-            vc.isInside = YES;
-            vc.delegate = self;
-            vc.manager = self.manager;
-            vc.model = model;
-            vc.modalPresentationStyle = UIModalPresentationOverFullScreen;
-            vc.modalPresentationCapturesStatusBarAppearance = YES;
-            [self presentViewController:vc animated:YES completion:nil];
-        }else {
-            HXPhotoPreviewViewController *previewVC = [[HXPhotoPreviewViewController alloc] init];
-            if (HX_IOS9Earlier) {
-                previewVC.photoViewController = self;
-            }
-            previewVC.delegate = self;
-            previewVC.modelArray = self.previewArray;
-            previewVC.manager = self.manager;
-            previewVC.currentModelIndex = [self.previewArray indexOfObject:model];
-            self.navigationController.delegate = previewVC;
-            [self.navigationController pushViewController:previewVC animated:NO];
-        }
-    }
+//    if (self.manager.configuration.singleSelected) {
+//        if (model.subType == HXPhotoModelMediaSubTypePhoto) {
+//            HXPhotoEditViewController *vc = [[HXPhotoEditViewController alloc] init];
+//            vc.isInside = YES;
+//            vc.delegate = self;
+//            vc.manager = self.manager;
+//            vc.model = model;
+//            vc.modalPresentationStyle = UIModalPresentationOverFullScreen;
+//            vc.modalPresentationCapturesStatusBarAppearance = YES;
+//            [self presentViewController:vc animated:YES completion:nil];
+//        }else {
+//            HXPhotoPreviewViewController *previewVC = [[HXPhotoPreviewViewController alloc] init];
+//            if (HX_IOS9Earlier) {
+//                previewVC.photoViewController = self;
+//            }
+//            previewVC.delegate = self;
+//            previewVC.modelArray = self.previewArray;
+//            previewVC.manager = self.manager;
+//            previewVC.currentModelIndex = [self.previewArray indexOfObject:model];
+//            self.navigationController.delegate = previewVC;
+//            [self.navigationController pushViewController:previewVC animated:NO];
+//        }
+//    }
     
     // 如果是视频，只能选一个m，也不能编辑的时候
     if (model.type == HXPhotoModelMediaTypeVideo &&
-        !_manager.configuration.videoCanEdit &&
         (_manager.configuration.videoMaxNum <= 1 || _manager.configuration.singleSelected)) {
         [self dismissVC];
     }

@@ -376,7 +376,6 @@
     
     // 如果是视频，只能选一个，也不能编辑的时候
     if (model.type == HXPhotoModelMediaTypeVideo &&
-        !_manager.configuration.videoCanEdit &&
         (_manager.configuration.videoMaxNum <= 1 || _manager.configuration.singleSelected)) {
         HXWeakSelf
         [self dismissViewControllerAnimated:false completion:^{

@@ -96,10 +96,10 @@
 //        _manager.configuration.supportRotation = NO;
 //        _manager.configuration.cameraCellShowPreview = NO;
 //        _manager.configuration.themeColor = [UIColor redColor];
-        _manager.configuration.navigationBar = ^(UINavigationBar *navigationBar, UIViewController *viewController) {
+//        _manager.configuration.navigationBar = ^(UINavigationBar *navigationBar, UIViewController *viewController) {
 //            [navigationBar setBackgroundImage:[UIImage imageNamed:@"APPCityPlayer_bannerGame"] forBarMetrics:UIBarMetricsDefault];
 //            navigationBar.barTintColor = [UIColor redColor];
-        };
+//        };
 //        _manager.configuration.sectionHeaderTranslucent = NO;
 //        _manager.configuration.navBarBackgroudColor = [UIColor redColor];
 //        _manager.configuration.sectionHeaderSuspensionBgColor = [UIColor redColor];
@@ -109,57 +109,57 @@
         
 //        _manager.configuration.requestImageAfterFinishingSelection = YES;
         
-        __weak typeof(self) weakSelf = self;
-        _manager.configuration.photoListBottomView = ^(HXPhotoBottomView *bottomView) {
-            if (weakSelf.manager.configuration.photoStyle != HXPhotoStyleDark) {
-                bottomView.bgView.barTintColor = weakSelf.bottomViewBgColor;
-            }
-        };
-        _manager.configuration.previewBottomView = ^(HXPhotoPreviewBottomView *bottomView) {
-            if (weakSelf.manager.configuration.photoStyle != HXPhotoStyleDark) {
-                bottomView.bgView.barTintColor = weakSelf.bottomViewBgColor;
-            }
-        };
-        _manager.configuration.albumListCollectionView = ^(UICollectionView *collectionView) {
-//            NSSLog(@"albumList:%@",collectionView);
-        };
-        _manager.configuration.photoListCollectionView = ^(UICollectionView *collectionView) {
-//            NSSLog(@"photoList:%@",collectionView);
-        };
-        _manager.configuration.previewCollectionView = ^(UICollectionView *collectionView) {
-//            NSSLog(@"preview:%@",collectionView);
-        };
+//        __weak typeof(self) weakSelf = self;
+//        _manager.configuration.photoListBottomView = ^(HXPhotoBottomView *bottomView) {
+//            if (weakSelf.manager.configuration.photoStyle != HXPhotoStyleDark) {
+//                bottomView.bgView.barTintColor = weakSelf.bottomViewBgColor;
+//            }
+//        };
+//        _manager.configuration.previewBottomView = ^(HXPhotoPreviewBottomView *bottomView) {
+//            if (weakSelf.manager.configuration.photoStyle != HXPhotoStyleDark) {
+//                bottomView.bgView.barTintColor = weakSelf.bottomViewBgColor;
+//            }
+//        };
+//        _manager.configuration.albumListCollectionView = ^(UICollectionView *collectionView) {
+////            NSSLog(@"albumList:%@",collectionView);
+//        };
+//        _manager.configuration.photoListCollectionView = ^(UICollectionView *collectionView) {
+////            NSSLog(@"photoList:%@",collectionView);
+//        };
+//        _manager.configuration.previewCollectionView = ^(UICollectionView *collectionView) {
+////            NSSLog(@"preview:%@",collectionView);
+//        };
 //        _manager.configuration.movableCropBox = YES;
 //        _manager.configuration.movableCropBoxEditSize = YES;
 //        _manager.configuration.movableCropBoxCustomRatio = CGPointMake(1, 1);
         
         // 使用自动的相机  这里拿系统相机做示例 
-        _manager.configuration.shouldUseCamera = ^(UIViewController *viewController, HXPhotoConfigurationCameraType cameraType, HXPhotoManager *manager) {
-            
-            // 这里拿使用系统相机做例子
-            UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
-            imagePickerController.delegate = (id)weakSelf;
-            imagePickerController.allowsEditing = NO;
-            NSString *requiredMediaTypeImage = ( NSString *)kUTTypeImage;
-            NSString *requiredMediaTypeMovie = ( NSString *)kUTTypeMovie;
-            NSArray *arrMediaTypes;
-            if (cameraType == HXPhotoConfigurationCameraTypePhoto) {
-                arrMediaTypes=[NSArray arrayWithObjects:requiredMediaTypeImage,nil];
-            }else if (cameraType == HXPhotoConfigurationCameraTypeVideo) {
-                arrMediaTypes=[NSArray arrayWithObjects:requiredMediaTypeMovie,nil];
-            }else {
-                arrMediaTypes=[NSArray arrayWithObjects:requiredMediaTypeImage, requiredMediaTypeMovie,nil];
-            }
-            [imagePickerController setMediaTypes:arrMediaTypes];
-            // 设置录制视频的质量
-            [imagePickerController setVideoQuality:UIImagePickerControllerQualityTypeHigh];
-            //设置最长摄像时间
-            [imagePickerController setVideoMaximumDuration:60.f];
-            imagePickerController.sourceType = UIImagePickerControllerSourceTypeCamera;
-            imagePickerController.navigationController.navigationBar.tintColor = [UIColor whiteColor];
-            imagePickerController.modalPresentationStyle=UIModalPresentationOverCurrentContext;
-            [viewController presentViewController:imagePickerController animated:YES completion:nil];
-        };
+//        _manager.configuration.shouldUseCamera = ^(UIViewController *viewController, HXPhotoConfigurationCameraType cameraType, HXPhotoManager *manager) {
+//
+//            // 这里拿使用系统相机做例子
+//            UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
+//            imagePickerController.delegate = (id)weakSelf;
+//            imagePickerController.allowsEditing = NO;
+//            NSString *requiredMediaTypeImage = ( NSString *)kUTTypeImage;
+//            NSString *requiredMediaTypeMovie = ( NSString *)kUTTypeMovie;
+//            NSArray *arrMediaTypes;
+//            if (cameraType == HXPhotoConfigurationCameraTypePhoto) {
+//                arrMediaTypes=[NSArray arrayWithObjects:requiredMediaTypeImage,nil];
+//            }else if (cameraType == HXPhotoConfigurationCameraTypeVideo) {
+//                arrMediaTypes=[NSArray arrayWithObjects:requiredMediaTypeMovie,nil];
+//            }else {
+//                arrMediaTypes=[NSArray arrayWithObjects:requiredMediaTypeImage, requiredMediaTypeMovie,nil];
+//            }
+//            [imagePickerController setMediaTypes:arrMediaTypes];
+//            // 设置录制视频的质量
+//            [imagePickerController setVideoQuality:UIImagePickerControllerQualityTypeHigh];
+//            //设置最长摄像时间
+//            [imagePickerController setVideoMaximumDuration:60.f];
+//            imagePickerController.sourceType = UIImagePickerControllerSourceTypeCamera;
+//            imagePickerController.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+//            imagePickerController.modalPresentationStyle=UIModalPresentationOverCurrentContext;
+//            [viewController presentViewController:imagePickerController animated:YES completion:nil];
+//        };
 //        _manager.shouldSelectModel = ^NSString *(HXPhotoModel *model) {
 //            // 如果return nil 则会走默认的判断是否达到最大值
 //            //return nil;
@@ -358,18 +358,22 @@
     self.manager.configuration.videoCanEdit = self.videoCanEditSwitch.on;
     self.manager.configuration.creationDateSort = self.createTimeSortSwitch.on;
     HXWeakSelf
-    [self hx_presentSelectPhotoControllerWithManager:self.manager didDone:^(NSArray<HXPhotoModel *> *allList, NSArray<HXPhotoModel *> *photoList, NSArray<HXPhotoModel *> *videoList, BOOL isOriginal, UIViewController *viewController, HXPhotoManager *manager) {
-        weakSelf.total.text = [NSString stringWithFormat:@"总数量：%ld   ( 照片：%ld   视频：%ld )",allList.count, photoList.count, videoList.count];
-        weakSelf.original.text = isOriginal ? @"YES" : @"NO";
-        NSSLog(@"block - all - %@",allList);
-        NSSLog(@"block - photo - %@",photoList);
-        NSSLog(@"block - video - %@",videoList);
-//        [photoList hx_requestImageWithOriginal:NO completion:^(NSArray<UIImage *> * _Nullable imageArray, NSArray<HXPhotoModel *> * _Nullable errorArray) {
-//            NSSLog(@"images - %@", imageArray);
-//        }];
-    } cancel:^(UIViewController *viewController, HXPhotoManager *manager) {
-        NSSLog(@"block - 取消了");
-    }];
+//    [self hx_presentSelectPhotoControllerWithManager:self.manager didDone:^(NSArray<HXPhotoModel *> *allList, NSArray<HXPhotoModel *> *photoList, NSArray<HXPhotoModel *> *videoList, BOOL isOriginal, UIViewController *viewController, HXPhotoManager *manager) {
+//        weakSelf.total.text = [NSString stringWithFormat:@"总数量：%ld   ( 照片：%ld   视频：%ld )",allList.count, photoList.count, videoList.count];
+//        weakSelf.original.text = isOriginal ? @"YES" : @"NO";
+//        NSSLog(@"block - all - %@",allList);
+//        NSSLog(@"block - photo - %@",photoList);
+//        NSSLog(@"block - video - %@",videoList);
+////        [photoList hx_requestImageWithOriginal:NO completion:^(NSArray<UIImage *> * _Nullable imageArray, NSArray<HXPhotoModel *> * _Nullable errorArray) {
+////            NSSLog(@"images - %@", imageArray);
+////        }];
+//    } cancel:^(UIViewController *viewController, HXPhotoManager *manager) {
+//        NSSLog(@"block - 取消了");
+//    }];
+    HXCustomNavigationController *preVC = [[HXCustomNavigationController alloc] initWithManager:_manager delegate:self];
+    preVC.modalPresentationStyle = UIModalPresentationOverFullScreen;
+    preVC.modalPresentationCapturesStatusBarAppearance = YES;
+    [self presentViewController:preVC animated:YES completion:nil];
 }
 - (IBAction)selectTypeClick:(UISegmentedControl *)sender {
     if (sender.selectedSegmentIndex == 0) {
@@ -391,6 +395,18 @@
     NSSLog(@"delegate - photo - %@",photoList);
     NSSLog(@"delegate - video - %@",videoList);
 }
+
+- (void)photoNavigationViewController:(HXCustomNavigationController *)photoNavigationViewController didDoneAllList:(NSArray<HXPhotoModel *> *)allList photos:(NSArray<HXPhotoModel *> *)photoList videos:(NSArray<HXPhotoModel *> *)videoList original:(BOOL)original {
+    
+    
+    NSLog(@"--------------");
+}
+
+- (void)photoNavigationViewControllerDidCancel:(HXCustomNavigationController *)photoNavigationViewController {
+    
+    NSLog(@"-----取消--------");
+}
+
 - (IBAction)tb:(id)sender {
     UISwitch *sw = (UISwitch *)sender;
     self.manager.configuration.navigationTitleSynchColor = sw.on;
