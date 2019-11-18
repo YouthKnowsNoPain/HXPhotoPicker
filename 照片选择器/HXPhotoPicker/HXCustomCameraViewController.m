@@ -485,7 +485,7 @@
 }
 - (void)videoFinishRecording:(NSURL *)videoURL {
     [self.bottomView stopRecord];
-    if (self.time < 3) {
+    if (self.time < _manager.configuration.videoMinimumSelectDuration) {
         self.bottomView.hidden = NO;
         self.cancelBtn.selected = NO;
         self.flashBtn.hidden = NO;
