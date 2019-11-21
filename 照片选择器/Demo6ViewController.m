@@ -119,6 +119,9 @@
         }];
     }else if (buttonIndex == 1){
         [self hx_presentSelectPhotoControllerWithManager:self.manager didDone:^(NSArray<HXPhotoModel *> *allList, NSArray<HXPhotoModel *> *photoList, NSArray<HXPhotoModel *> *videoList, BOOL isOriginal, UIViewController *viewController, HXPhotoManager *manager) {
+            [photoList hx_requestImageDataWithCompletion:^(NSArray<NSData *> * _Nullable imageDataArray) {
+                NSLog(@"%@",imageDataArray);
+            }];
             Demo6SubViewController *vc = [[Demo6SubViewController alloc] init];
             vc.manager = weakSelf.manager;
             [weakSelf.navigationController pushViewController:vc animated:YES];

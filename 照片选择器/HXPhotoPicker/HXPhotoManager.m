@@ -765,15 +765,16 @@
     HXPhotoModel *photoModel = [[HXPhotoModel alloc] init];
     photoModel.clarityScale = self.configuration.clarityScale;
     photoModel.asset = asset;
-    if ([[asset valueForKey:@"isCloudPlaceholder"] boolValue]) {
-        if (_iCloudAssetArray.count) {
-            if (![_iCloudAssetArray containsObject:asset]) {
-                photoModel.isICloud = YES;
-            }
-        }else {
-            photoModel.isICloud = YES;
-        }
-    }
+    // 检测不准确
+//    if ([[asset valueForKey:@"isCloudPlaceholder"] boolValue]) {
+//        if (_iCloudAssetArray.count) {
+//            if (![_iCloudAssetArray containsObject:asset]) {
+//                photoModel.isICloud = YES;
+//            }
+//        }else {
+//            photoModel.isICloud = YES;
+//        }
+//    }
     if (_selectedAssetList) {
         if ([_selectedAssetList containsObject:asset]) {
             HXPhotoModel *selectModel = [self.tempSelectedModelList objectAtIndex:[_selectedAssetList indexOfObject:asset]];
@@ -1150,12 +1151,41 @@
     self.tempDateList = dateArray;
     self.tempFirstSelectModel = firstSelectModel;
     self.tempAlbumModel = albumModel;
-    if (complete) {
-        complete(self.tempAllList, self.tempPreviewList, self.tempPhotoList, self.tempVideoList, self.tempDateList, self.tempFirstSelectModel,  self.tempAlbumModel);
+    
+    // 处理图片是否为iCloud照片
+    dispatch_group_t group = dispatch_group_create();
+    for (HXPhotoModel *model in allArray) {
+        // 02>>进入组（进入组和离开组必须成对出现, 否则会造成死锁）
+        dispatch_group_enter(group);
+        __block BOOL isPhotoInICloud = NO;
+        PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
+        options.networkAccessAllowed = YES;
+        options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
+        options.progressHandler = ^(double progress, NSError *error, BOOL *stop, NSDictionary *info) {
+            isPhotoInICloud = YES;
+        };
+        if (model.asset) {
+            [[PHImageManager defaultManager] requestImageDataForAsset:model.asset options:options resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
+                if ([[info objectForKey:PHImageResultIsInCloudKey] boolValue]) {
+                   isPhotoInICloud = YES;
+                }
+                model.isICloud = isPhotoInICloud;
+                // 03>>进入组（进入组和离开组必须成对出现, 否则会造成死锁）
+                dispatch_group_leave(group);
+            }];
+        } else {
+            dispatch_group_leave(group);
+        }
     }
-    if (self.photoListBlock) {
-        self.photoListBlock(self.tempAllList, self.tempPreviewList, self.tempPhotoList, self.tempVideoList, self.tempDateList, self.tempFirstSelectModel,  self.tempAlbumModel);
-    }
+    // 04>>当执行for循环的时候，一次次执行异步任务下载数据，只有当这两个异步任务都执行完毕了才会执行dispatch_grout_notify方法。
+    dispatch_group_notify(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        if (complete) {
+            complete(self.tempAllList, self.tempPreviewList, self.tempPhotoList, self.tempVideoList, self.tempDateList, self.tempFirstSelectModel,  self.tempAlbumModel);
+        }
+        if (self.photoListBlock) {
+            self.photoListBlock(self.tempAllList, self.tempPreviewList, self.tempPhotoList, self.tempVideoList, self.tempDateList, self.tempFirstSelectModel,  self.tempAlbumModel);
+        }
+    });
     self.getPhotoListing = NO;
 }
 - (void)addICloudModel:(HXPhotoModel *)model {
