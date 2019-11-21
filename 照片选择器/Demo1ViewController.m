@@ -92,7 +92,8 @@
         _manager.configuration.saveSystemAblum = YES;
         _manager.configuration.selectTogether = YES;
         _manager.configuration.creationDateSort = YES;
-        _manager.configuration.videoMaximumSelectDuration = 100000;
+        _manager.configuration.videoMaximumSelectDuration = 30;
+        _manager.configuration.videoMinimumSelectDuration = 4;
 //        _manager.configuration.supportRotation = NO;
 //        _manager.configuration.cameraCellShowPreview = NO;
 //        _manager.configuration.themeColor = [UIColor redColor];

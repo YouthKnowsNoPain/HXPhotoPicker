@@ -106,7 +106,18 @@
         self.manager.configuration.navigationBar(self.customNavigationBar, self);
     }
     [UINavigationBar appearance].translucent = YES;
+    
+    // 前台到后台
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEnterBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    
 }
+
+- (void)didEnterBackground {
+    if (_manager.type == HXPhotoManagerSelectedTypeVideo) {
+        self.flashBtn.selected = NO;
+    }
+}
+
 - (void)setupImageOutput {
     [self.cameraController initImageOutput];
 }
