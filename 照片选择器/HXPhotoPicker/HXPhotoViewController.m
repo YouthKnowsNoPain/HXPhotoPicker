@@ -1864,7 +1864,6 @@ HXVideoEditViewControllerDelegate
 @property (assign, nonatomic) PHImageRequestID requestID;
 @property (assign, nonatomic) PHImageRequestID iCloudRequestID;
 @property (strong, nonatomic) UILabel *stateLb;
-@property (strong, nonatomic) CAGradientLayer *bottomMaskLayer;
 @property (strong, nonatomic) UIButton *selectBtn;
 @property (strong, nonatomic) UIImageView *iCloudIcon;
 @property (strong, nonatomic) CALayer *iCloudMaskLayer;
@@ -1987,27 +1986,22 @@ HXVideoEditViewControllerDelegate
         }];
     }
     if (model.type == HXPhotoModelMediaTypePhotoGif) {
-        self.stateLb.text = @"GIF";
+        self.stateLb.attributedText = [self getShadowMethod:@"GIF"];
         self.stateLb.hidden = NO;
-        self.bottomMaskLayer.hidden = NO;
     }else if (model.type == HXPhotoModelMediaTypeLivePhoto) {
-        self.stateLb.text = @"Live";
+        self.stateLb.attributedText = [self getShadowMethod:@"Live"];
         self.stateLb.hidden = NO;
-        self.bottomMaskLayer.hidden = NO;
     }else {
         if (model.subType == HXPhotoModelMediaSubTypeVideo) {
-            self.stateLb.text = model.videoTime;
+            self.stateLb.attributedText = [self getShadowMethod:model.videoTime];
             self.stateLb.hidden = NO;
-            self.bottomMaskLayer.hidden = NO;
         }else {
             if (model.cameraPhotoType == HXPhotoModelMediaTypeCameraPhotoTypeNetWorkGif) {
-                self.stateLb.text = @"GIF";
+                self.stateLb.attributedText = [self getShadowMethod:@"GIF"];
                 self.stateLb.hidden = NO;
-                self.bottomMaskLayer.hidden = NO;
             }else {
                 self.stateLb.hidden = YES;
-                self.bottomMaskLayer.hidden = YES;
-            } 
+            }
         }
     }
     self.selectMaskLayer.hidden = !model.selected;
@@ -2201,7 +2195,6 @@ HXVideoEditViewControllerDelegate
     self.imageView.frame = self.bounds;
     self.maskView.frame = self.bounds;
     self.stateLb.frame = CGRectMake(0, self.hx_h - 18, self.hx_w - 4, 18);
-    self.bottomMaskLayer.frame = CGRectMake(0, self.hx_h - 20, self.hx_w, 20);
     self.selectBtn.frame = CGRectMake(self.hx_w - 21, 1, 20, 20);
     self.selectMaskLayer.frame = self.bounds;
     self.iCloudMaskLayer.frame = self.bounds;
@@ -2214,6 +2207,17 @@ HXVideoEditViewControllerDelegate
 }
 - (void)dealloc {
     self.model.dateCellIsVisible = NO;
+}
+    
+- (NSAttributedString *)getShadowMethod:(NSString *)text {
+    NSShadow *shadow = [[NSShadow alloc] init];
+    shadow.shadowBlurRadius = 3;
+    shadow.shadowColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.4];
+    shadow.shadowOffset = CGSizeMake(0,0);
+    NSMutableAttributedString *att = [[NSMutableAttributedString alloc] initWithString:text
+                                                                            attributes: @{NSFontAttributeName: [UIFont systemFontOfSize:11],
+                                                                                          NSForegroundColorAttributeName: [UIColor whiteColor], NSShadowAttributeName: shadow}];
+    return att;
 }
 #pragma mark - < 懒加载 >
 - (UIView *)highlightMaskView {
@@ -2251,7 +2255,6 @@ HXVideoEditViewControllerDelegate
 - (UIView *)maskView {
     if (!_maskView) {
         _maskView = [[UIView alloc] init];
-        [_maskView.layer addSublayer:self.bottomMaskLayer];
         [_maskView.layer addSublayer:self.selectMaskLayer];
         [_maskView.layer addSublayer:self.iCloudMaskLayer];
         [_maskView.layer addSublayer:self.videoMaskLayer];
@@ -2305,22 +2308,7 @@ HXVideoEditViewControllerDelegate
     }
     return _stateLb;
 }
-- (CAGradientLayer *)bottomMaskLayer {
-    if (!_bottomMaskLayer) {
-        _bottomMaskLayer = [CAGradientLayer layer];
-        _bottomMaskLayer.colors = @[
-                                    (id)[[UIColor blackColor] colorWithAlphaComponent:0].CGColor ,
-                                    (id)[[UIColor blackColor] colorWithAlphaComponent:0.15].CGColor ,
-                                    (id)[[UIColor blackColor] colorWithAlphaComponent:0.35].CGColor ,
-                                    (id)[[UIColor blackColor] colorWithAlphaComponent:0.6].CGColor
-                                    ];
-        _bottomMaskLayer.startPoint = CGPointMake(0, 0);
-        _bottomMaskLayer.endPoint = CGPointMake(0, 1);
-        _bottomMaskLayer.locations = @[@(0.15f),@(0.35f),@(0.6f),@(0.9f)];
-        _bottomMaskLayer.borderWidth  = 0.0;
-    }
-    return _bottomMaskLayer;
-}
+
 - (UIButton *)selectBtn {
     if (!_selectBtn) {
         _selectBtn = [UIButton buttonWithType:UIButtonTypeCustom];
