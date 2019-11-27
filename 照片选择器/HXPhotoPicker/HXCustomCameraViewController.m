@@ -27,7 +27,7 @@
 @property (strong, nonatomic) UIButton *flashBtn;
 @property (strong, nonatomic) HXCustomCameraBottomView *bottomView;
 @property (strong, nonatomic) NSTimer *timer;
-@property (assign, nonatomic) NSUInteger time;
+@property (assign, nonatomic) NSTimeInterval time;
 @property (strong, nonatomic) UIImageView *imageView;
 @property (strong, nonatomic) HXCustomCameraPlayVideoView *playVideoView;
 @property (strong, nonatomic) UIButton *doneBtn;
@@ -462,7 +462,7 @@
 - (void)startTimer {
     self.time = 0;
     [self.timer invalidate];
-    self.timer = [NSTimer timerWithTimeInterval:0.2f
+    self.timer = [NSTimer timerWithTimeInterval:0.1f
                                          target:self
                                        selector:@selector(updateTimeDisplay)
                                        userInfo:nil
@@ -471,11 +471,11 @@
 }
 
 - (void)updateTimeDisplay {
-    CMTime duration = self.cameraController.recordedDuration;
-    NSTimeInterval time = CMTimeGetSeconds(duration);
-    self.time = (NSInteger)time;
-    [self.bottomView changeTime:time];
-    if (time + 0.4f >= self.manager.configuration.videoMaximumDuration) {
+//    CMTime duration = self.cameraController.recordedDuration;
+//    NSTimeInterval time = CMTimeGetSeconds(duration);
+    self.time = self.time+0.1;
+    [self.bottomView changeTime:_time];
+    if (_time + 0.2f >= self.manager.configuration.videoMaximumDuration) {
         [self stopTimer];
         [self.cameraController stopRecording];
     }
@@ -1057,7 +1057,7 @@
     if (!_playView) {
         _playView = [[HXFullScreenCameraPlayView alloc] initWithFrame:CGRectMake(0, 0, 74, 74) color:self.manager.configuration.themeColor];
         self.tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(takePictures)];
-        _playView.minProgress = _manager.configuration.videoMinimumSelectDuration/_manager.configuration.videoMaximumDuration;
+        _playView.minProgress = (CGFloat)_manager.configuration.videoMinimumSelectDuration/(CGFloat)_manager.configuration.videoMaximumDuration;
         [_playView addGestureRecognizer:self.tap];
     }
     return _playView;
